@@ -1,10 +1,9 @@
 // Cache name and files to cache
 const CACHE_NAME = 'ngss-pwa-cache-v1';
 const FILES_TO_CACHE = [
-	'/',
-	'/index.html',
-	'/manifest.json',
-	'/icon.png'
+	'/NGSStability/index.html',
+	'/NGSStability/manifest.json',
+	'/NGSStability/icon.png'
 ];
 
 // Install event: Cache files
