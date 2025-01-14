@@ -335,11 +335,19 @@
 		#today .label {padding: 0 0 0 100px;}
 
 		@media (max-width: 900px) {
-			.hide-sm {
-				display: none;
+			.hide-sm,
+			.label {
+				display: none !important;
 			}
 			.month-2, .day-2 {
 				padding-right: 100px;
+			}
+			.date-row {
+				min-width: inherit;
+			}
+			.date-row .date {
+				min-width: 1170px;
+				display: inline-block;
 			}
 		}
 	</style>
