@@ -33,6 +33,7 @@
 			margin: 55px;
 			border-radius: 10px;
 			box-shadow: inset 1px 1px 5px 2px #000;
+			min-width: 2412px;
 		}
 
 		.display-container {
@@ -304,7 +305,34 @@
 			display: flex;
 			flex-wrap: unset;
 			align-items: center;
+			flex:1;
+			justify-content: center;
 		}
+		#colorToggleContainer {
+
+		}
+		.minimal {
+			font-size: 210px;
+			font-family: monospace;
+			color: #eee;
+			line-height:1.05em;
+			letter-spacing: -10px;
+		}
+		.color .green .minimal {
+			color: var(--green-border);
+		}
+		.color .red .minimal {
+			color: var(--red-border);
+		}
+		.color .orange .minimal {
+			color: var(--orange-border);
+		}
+
+		.display-container {display: none;}
+		.segmentDisplayMode .minimal {display: none;}
+		.segmentDisplayMode .display-container {display: inherit;}
+		.kerning {padding: 0 10px;}
+		#today .label {padding: 0 0 0 100px;}
 
 		@media (max-width: 900px) {
 			.hide-sm {
@@ -320,10 +348,16 @@
 	<div id="wrapper">
 		<div id="container">
 			<div class="date-row" id="colorToggleContainer">
+				<div class="fieldContainer"><input type="checkbox" value="1" id="segmentDisplay" name="segmentDisplay" />
+				<label for="colorToggle">Use 7 Segment Display</label></div>
 				<div class="fieldContainer"><input type="checkbox" value="1" id="colorToggle" name="colorToggle" />
 				<label for="colorToggle">Color Display On/Off</label></div>
 			</div>
 			<div class="date-row green" id="today">
+				<div class="minimal">
+					<span class="label">Today: </span>
+					<span class="date"></span>
+				</div>
 				<div class="blank display-container display-no-null hide-sm">
 					<div class="segment-x segment-a"><span class="segment-border"></span></div>
 					<div class="segment-y segment-b"><span class="segment-border"></span></div>
@@ -487,7 +521,11 @@
 					<div class="segment-x segment-g"><span class="segment-border"></span></div>
 				</div>
 			</div>
-			<div class="date-row orange" id="thirty">
+			<div class="date-row orange" id="sixty">
+				<div class="minimal">
+					<span class="label">60<span class="kerning"></span>Days: </span>
+					<span class="date"></span>
+				</div>
 				<div class="blank display-container display-no-null hide-sm">
 					<div class="segment-x segment-a"><span class="segment-border"></span></div>
 					<div class="segment-y segment-b"><span class="segment-border"></span></div>
@@ -652,6 +690,10 @@
 				</div>
 			</div>
 			<div class="date-row red" id="ninety">
+				<div class="minimal">
+					<span class="label">90<span class="kerning"></span>Days: </span>
+					<span class="date"></span>
+				</div>
 				<div class="blank display-container display-no-null hide-sm">
 					<div class="segment-x segment-a"><span class="segment-border"></span></div>
 					<div class="segment-y segment-b"><span class="segment-border"></span></div>
@@ -865,11 +907,14 @@
 
 		// Update display rows
 		function renderDateParts(rowId, dateStr) {
+			const row = document.getElementById(rowId);
+
+			row.querySelector('.date').textContent = dateStr;
+
 			dateStr=dateStr.replaceAll(' ','');
 
-			const row = document.getElementById(rowId);
 			// Assign month parts
-			if(rowId=="thirty"){row.querySelector('.num-6').classList.add(`display-no-6`);}
+			if(rowId=="sixty"){row.querySelector('.num-6').classList.add(`display-no-6`);}
 			if(rowId=="ninety"){row.querySelector('.num-9').classList.add(`display-no-9`);}
 			if(rowId!="today"){row.querySelector('.num-0').classList.add(`display-no-0`);}
 			
@@ -888,7 +933,7 @@
 		}
 
 		renderDateParts('today', formatDate(today));
-		renderDateParts('thirty', formatDate(sixtyDaysAgo));
+		renderDateParts('sixty', formatDate(sixtyDaysAgo));
 		renderDateParts('ninety', formatDate(ninetyDaysAgo));
 
 		let reset = setInterval(function() {
@@ -905,7 +950,7 @@
 			});
 
 			renderDateParts('today', formatDate(today));
-			renderDateParts('thirty', formatDate(sixtyDaysAgo));
+			renderDateParts('sixty', formatDate(sixtyDaysAgo));
 			renderDateParts('ninety', formatDate(ninetyDaysAgo));
 		}, 1000 * 60 * 60 * 4);
 
@@ -926,6 +971,26 @@
 			checkbox.checked = savedColorMode;
 			if (savedColorMode) {
 				document.body.classList.add('color');
+			}
+		});
+
+		document.querySelector('#segmentDisplay').addEventListener("click", (e) => {
+			if (e.target.checked) {
+				document.body.classList.add('segmentDisplayMode');
+				localStorage.setItem('viewmode', 'true');
+			} else {
+				document.body.classList.remove('segmentDisplayMode');
+				localStorage.setItem('viewmode', 'false');
+			}
+		});
+		window.addEventListener('DOMContentLoaded', () => {
+			const savedColorMode = localStorage.getItem('viewmode') === 'true';
+			const checkbox = document.querySelector('#segmentDisplay');
+			
+			// Apply saved state
+			checkbox.checked = savedColorMode;
+			if (savedColorMode) {
+				document.body.classList.add('segmentDisplayMode');
 			}
 		});
 	</script>
