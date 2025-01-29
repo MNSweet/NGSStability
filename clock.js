@@ -27,18 +27,6 @@ renderDateParts('sixty', formatDate(sixtyDaysAgo));
 renderDateParts('ninety', formatDate(ninetyDaysAgo));
 
 let reset = setInterval(function() {
-
-	const suffixes = [...Array.from({ length: 10 }, (_, i) => i.toString())];
-	const classRegex = new RegExp(`^display-no-(${suffixes.join('|')})$`);
-
-	document.querySelectorAll('[class*="display-no-"]').forEach(element => {
-		element.classList.forEach(cls => {
-			if (classRegex.test(cls)) {
-				element.classList.remove(cls);
-			}
-		});
-	});
-
 	renderDateParts('today', formatDate(today));
 	renderDateParts('sixty', formatDate(sixtyDaysAgo));
 	renderDateParts('ninety', formatDate(ninetyDaysAgo));
@@ -61,16 +49,6 @@ window.addEventListener('DOMContentLoaded', () => {
 	checkbox.checked = savedColorMode;
 	if (savedColorMode) {
 		document.body.classList.add('color');
-	}
-});
-
-document.querySelector('#segmentDisplay').addEventListener("click", (e) => {
-	if (e.target.checked) {
-		document.body.classList.add('segmentDisplayMode');
-		localStorage.setItem('viewmode', 'true');
-	} else {
-		document.body.classList.remove('segmentDisplayMode');
-		localStorage.setItem('viewmode', 'false');
 	}
 });
 window.addEventListener('DOMContentLoaded', () => {
