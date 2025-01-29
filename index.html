@@ -4,153 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>NGS Stability Date Board</title>
-	<style>
-		body {
-			background: #000;
-			margin: 0;
-			padding: 0;
-			overflow: hidden;
-			font-family: monospace;
-			color: #eee;
-		}
-		#wrapper {
-			display: flex;
-			align-content: center;
-			justify-content: center;
-			flex-wrap: wrap;
-			flex-direction: column;
-			height: 100vh;
-			width: 100vw;
-		}
-		#container {
-			transform-origin: center;
-			transform: scale(var(--vh-scale));
-		}
-
-		.moduleLink {
-
-		}
-
-		.date-row {
-			display: flex;
-			justify-content: center;
-			border: 4px groove #333;
-			background: #333;
-			padding: 15px;
-			margin: 55px;
-			border-radius: 10px;
-			box-shadow: inset 1px 1px 5px 2px #000;
-			min-width: 2412px;
-			font-size: 60px;
-		}
-
-		.date-row .label,
-		.date-row .date {
-			font-size: 210px;
-		}
-
-		.display-container {
-			margin-bottom: 10px;
-			margin-right: 24px;
-			position: relative;
-			width: 110px;
-			height: auto;
-			aspect-ratio: 1/2;
-		}
-
-		/** Colors */
-		:root {
-		  --red-border: #ce1f41/*#e90041 fade 3d3334*/;
-		  --green-border: #53a723/*#53ba0f fade 373b34*/;
-		  --orange-border: #c19f22/*#ddb300 fade 3d3b34*/;
-		}
-
-		#nav .moduleLink.active {
-			background-color: #6a6a6a;
-		}
-
-		#nav .moduleLink:not(.active)::hover {
-			background-color: #4a4a4a;
-		}
-
-		.date {
-			letter-spacing: -10px;
-		}
-
-		input[type="checkbox"] {
-			cursor: pointer;
-			margin: 1rem;
-			position: relative;
-			width: 100px;
-			height: 60px;
-			border-radius: 25px;
-			outline: none;
-			background-color: #ccc;
-			-webkit-appearance: none;
-			transition: background .3s;
-		}
-		input[type="checkbox"]::after {
-			content: '';
-			position: absolute;
-			top: 50%;
-			left: 30%;
-			transform: translate(-50%, -50%);
-			border-radius: 50%;
-			height: 40px;
-			width: 40px;
-			background-color: white;
-			transition: left .3s;
-		}
-		input[type="checkbox"]:checked {
-			background-color: rgb(141, 221, 141);
-		}
-
-		input[type="checkbox"]:checked::after {
-			left: 70%;
-		}
-		label {
-			color: #fff;
-			font-size: 46px;
-			font-family: monospace;
-		}
-		.fieldContainer {
-			display: flex;
-			flex-wrap: unset;
-			align-items: center;
-			flex:1;
-			justify-content: center;
-		}
-		#colorToggleContainer {
-
-		}
-		.color .green {
-			color: var(--green-border);
-		}
-		.color .red {
-			color: var(--red-border);
-		}
-		.color .orange {
-			color: var(--orange-border);
-		}
-
-		.display-container {display: none;}
-		.kerning {padding: 0 10px;}
-		#today .label {padding: 0 0 0 100px;}
-
-		@media (max-width: 900px) {
-			.hide-sm,
-			.label {
-				display: none !important;
-			}
-			.date-row {
-				min-width: inherit;
-			}
-			.date-row .date {
-				min-width: 1170px;
-				display: inline-block;
-			}
-		}
-	</style>
+	<link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body class="">
 	<div id="wrapper">
@@ -160,7 +14,7 @@
 				<div class="moduleLink fieldContainer" data-id="renamers">File Renamers</div>
 				<div class="moduleLink fieldContainer" data-id="barcode">BarCode Generator</div>
 			</div>
-			<div id="clockContainer">
+			<div id="clocks">
 				<div class="date-row" id="colorToggleContainer">
 					<div class="moduleHeading fieldContainer">Clock Settings:</div>
 					<div class="fieldContainer"><input type="checkbox" value="1" id="colorToggle" name="colorToggle" />
@@ -179,37 +33,14 @@
 					<span class="date"></span>
 				</div>
 			</div>
+			<div id="renamers">
+			</div>
+			<div id="barcode">
+			</div>
 		</div>
 	</div>
 
-	<script>
-		if ('serviceWorker' in navigator) {
-			navigator.serviceWorker.register('/NGSStability/sw.js')
-			.then(registration => {
-				console.log('Service Worker registered:', registration);
-			})
-			.catch(error => {
-				console.error('Service Worker registration failed:', error);
-			});
-		}
-
-		function updateScale() {
-			let vh = window.innerHeight;
-			let targetHeight = vh / 7; // Target height for each div
-			let scaleHFactor = targetHeight / 228; // Scale factor based on current height
-
-			let vw = window.innerWidth;
-			let scaleWFactor = vw / (vw > 900 ? 2800 : 1500); // Scale factor based on current width
-
-			let scaleFactor = Math.min(scaleHFactor,scaleWFactor);
-
-			// Update CSS variable for transform scaling
-			document.documentElement.style.setProperty('--vh-scale', `${scaleFactor}`);
-		}
-
-		updateScale();
-		window.addEventListener('resize', updateScale);
-	</script>
+	<script type="text/javascript" src="main.js"></script>
 	<script type="text/javascript" src="clock.js"></script>
 	<script type="text/javascript" src="barcode.js"></script>
 </body>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>PDF File Renamer</title>
+	<link rel="stylesheet" href="fileexplorer.css">
+	<script defer src="fileexplorer.js"></script>
+</head>
+<body>
+	<div id="app">
+		<div id="notification">
+			<p>This tool requires access to your files to rename them. You will need to re-authenticate if you close or reload this page.</p>
+			<button id="close-notification">&times;</button>
+		</div>
+
+		<div id="file-renamer">
+			<h1>PDF File Renamer</h1>
+			<section id="folder-selection">
+				<h2>Select Folder</h2>
+				<button id="select-folder">Choose Folder</button>
+				<p id="selected-folder">No folder selected</p>
+			</section>
+
+			<section id="file-list-section" class="hidden">
+				<h2>Files Found</h2>
+				<label><input type="checkbox" id="select-all" checked>Select All</label>
+				<ul id="file-list"></ul>
+			</section>
+			
+			<section id="rename-options" class="hidden">
+				<h2>Rename Options</h2>
+				<div id="type-selection" class="type-selection">
+					<input type="radio" id="neg" name="rename-type" value="NEG" checked>
+					<label for="neg">NEG</label>
+					<input type="radio" id="pos" name="rename-type" value="POS">
+					<label for="pos">POS</label>
+					<input type="radio" id="qns" name="rename-type" value="QNS">
+					<label for="qns">QNS</label>
+					<div id="active-indicator"></div>
+				</div>
+				<label for="preset-select">Choose a Preset:</label>
+				<select id="preset-select">
+					<option value="">-- Select a Preset --</option>
+					<option value="preset1">Preset 1</option>
+					<option value="preset2">Preset 2</option>
+					<option value="custom">Custom</option>
+				</select>
+				<div id="custom-regex" class="hidden">
+					<label for="custom-regex-input">Custom Regex:</label>
+					<input type="text" id="custom-regex-input" placeholder="Enter your regex">
+				</div>
+				<div id="preview-section">
+					<h3>Preview</h3>
+					<p><strong>Before:</strong> <span id="preview-before"></span></p>
+					<p><strong>After:</strong> <span id="preview-after"></span></p>
+				</div>
+			</section>
+
+
+			<section id="confirmation" class="hidden">
+				<h2>Confirm Changes</h2>
+				<p>Total files to rename: <span id="file-count"></span></p>
+				<button id="rename-files">Rename Files</button>
+				<button id="undo-rename" style="background-color: #d3d3d3; color: #6c757d; border: none; cursor: pointer;">Undo Last Rename</button>
+			</section>
+		</div>
+	</div>
+</body>
+</html>

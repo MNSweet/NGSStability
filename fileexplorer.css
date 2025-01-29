@@ -1,0 +1,165 @@
+/* styles.css */
+body {
+	font-family: Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+	background-color: #f9f9f9;
+	color: #333;
+}
+
+#app {
+	max-width: 800px;
+	margin: 20px auto;
+	padding: 20px;
+	background-color: #fff;
+	border-radius: 8px;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2, h3 {
+	color: #444;
+}
+
+button {
+	display: inline-block;
+	background-color: #007bff;
+	color: #fff;
+	border: none;
+	border-radius: 4px;
+	padding: 10px 15px;
+	font-size: 14px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+button:hover {
+	background-color: #0056b3;
+}
+
+button[disabled] {
+	background-color: #ccc;
+	color: #666;
+	cursor: not-allowed;
+}
+
+.hidden {
+	display: none;
+}
+
+section {
+	margin-bottom: 20px;
+}
+
+label {
+	font-weight: bold;
+}
+
+input[type="text"], select {
+	width: 100%;
+	padding: 8px;
+	margin: 8px 0;
+	box-sizing: border-box;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
+
+#notification {
+	background-color: #fffbcc;
+	padding: 15px;
+	margin-bottom: 15px;
+	border: 1px solid #ffec99;
+	border-radius: 4px;
+	position: relative;
+}
+
+#close-notification {
+	position: absolute;
+	top: -10px;
+	right: -10px;
+	color:#000000;
+	background: none;
+	border: none;
+	font-size: 18px;
+	cursor: pointer;
+}
+
+#file-list {
+	list-style-type: none;
+	padding: 0;
+}
+
+#file-list li {
+	padding: 10px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	margin-bottom: 5px;
+	background-color: #f8f9fa;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+#preview-section p {
+	margin: 10px 0;
+}
+
+#preview-section span {
+	font-weight: bold;
+}
+
+#undo-rename {
+	background-color: #d3d3d3;
+	color: #6c757d;
+	border: none;
+}
+
+#undo-rename:hover {
+	background-color: #c0c0c0;
+}
+
+#select-folder {
+	background-color: #28a745;
+}
+
+#select-folder:hover {
+	background-color: #218838;
+}
+
+#rename-files {
+	background-color: #dc3545;
+}
+
+#rename-files:hover {
+	background-color: #c82333;
+}
+
+
+
+#type-selection {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	position: relative;
+	padding: 5px;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	background: white;
+}
+
+#type-selection label {
+	cursor: pointer;
+	padding: 5px 10px;
+}
+
+#type-selection input {
+	display: none;
+}
+
+#type-selection #active-indicator {
+	position: absolute;
+	bottom: 0;
+	height: 3px;
+	background: #007bff;
+	width: 0;
+	transition: transform 0.3s ease, width 0.3s ease;
+}
