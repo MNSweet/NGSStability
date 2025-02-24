@@ -1,0 +1,7 @@
+if(document.querySelectorAll('#dvDocumentsList #uploadTable').length == 1){
+	fileDrop("#dvDocumentsList #uploadTable","#dvDocumentsList #uploadTable .upload span","#dvFooter");
+}
+
+if(document.querySelectorAll('#dvResutEntry_ResultDocuments #uploadTable').length == 1){
+	fileDrop("#dvResutEntry_ResultDocuments #uploadTable","#dvResutEntry_ResultDocuments .upload span","#dvFooter");
+}
