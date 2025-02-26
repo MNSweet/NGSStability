@@ -142,17 +142,45 @@
 				display: inline-block;
 			}
 		}
+
+		#rejectionPhrases {
+			font-family: monospace;
+		}
+
+		#rejectionPhrases span.copyToClipboard {
+			background: #ffffff;
+			display: block;
+			padding: 20px;
+			margin: 0 10px;
+			font-size: 30px;
+			border-radius: 20px;
+			cursor: pointer;
+		}
+		#rejectionPhrases .date-row {
+			flex-wrap: wrap;
+		}
+		#rejectionPhrases h1 {
+			font-size: 45px;
+			margin: 0 0 15px;
+			color:#FFFFFF;
+		}
+		#rejectionPhrases h3 {
+			font-size: 26px;
+			margin: 15px 0 0;
+			color:#FFFFFF;
+		}
 	</style>
 </head>
 <body class="">
 	<div id="wrapper">
 		<div id="container">
-			<div id="tabsContainer">
+			<div id="tabsContainer" style="display:none;">
 				<div class="date-row">
-					<div class="clockTab"><!--CLOCK--></div>
-					<div class="pdFileRenamerTab"><!--RES Renamer--></div>
+					<div class="clockTab">CLOCk</div>
+					<div class="pdFileRenamerTab">RES Renamer</div>
 				</div>
 			</div>
+			<div class="date-row"></div>
 			<div id="clockContainer">
 				<div class="date-row" id="colorToggleContainer">
 					<div class="fieldContainer"><input type="checkbox" value="1" id="colorToggle" name="colorToggle" />
@@ -177,6 +205,20 @@
 					</div>
 				</div>
 			</div>
+			<div class="date-row"></div>
+			<div id="rejectionPhrases">
+				<div class="date-row">
+					<h1>Rejection Phrases</h1>
+					<div style="flex-basis: 100%;height: 0;"></div>
+					<span class="copyToClipboard" data-text="Scrubbing Rejected">Scrubbing Rejected</span>
+					<span class="copyToClipboard" data-text="No Liquid in Container">No Liquid in Container</span>
+					<span class="copyToClipboard" data-text="Duplicate - Original DOC ">Duplicate - Original DOC</span>
+					<span class="copyToClipboard" data-text="Out of Stability">Out of Stability</span>
+					<div style="flex-basis: 100%;height: 0;"></div>
+					<h3>* Click to copy to clipboard</h3>
+				</div>
+			</div>
+			<div class="date-row"></div>
 		</div>
 	</div>
 
@@ -193,7 +235,7 @@
 
 		function updateScale() {
 			let vh = window.innerHeight;
-			let targetHeight = vh / 5; // Target height for each div
+			let targetHeight = vh / 7; // Target height for each div
 			let scaleHFactor = targetHeight / 228; // Scale factor based on current height
 
 			let vw = window.innerWidth;
@@ -273,26 +315,52 @@
 				document.body.classList.add('color');
 			}
 		});
-
-		document.querySelector('#segmentDisplay').addEventListener("click", (e) => {
-			if (e.target.checked) {
-				document.body.classList.add('segmentDisplayMode');
-				localStorage.setItem('viewmode', 'true');
-			} else {
-				document.body.classList.remove('segmentDisplayMode');
-				localStorage.setItem('viewmode', 'false');
-			}
-		});
 		window.addEventListener('DOMContentLoaded', () => {
 			const savedColorMode = localStorage.getItem('viewmode') === 'true';
-			const checkbox = document.querySelector('#segmentDisplay');
-			
-			// Apply saved state
-			checkbox.checked = savedColorMode;
 			if (savedColorMode) {
 				document.body.classList.add('segmentDisplayMode');
 			}
 		});
+
+document.querySelectorAll('.copyToClipboard').forEach(function(element) {
+	element.addEventListener('click', function() {
+		// Grab the text from the data-text attribute
+		const textToCopy = element.getAttribute('data-text');
+		
+		// Copy the text to the clipboard
+		navigator.clipboard.writeText(textToCopy).then(function() {
+			// Create the "Copied" flash text
+			const flashText = document.createElement('span');
+			flashText.innerText = 'Copied';
+			flashText.style.position = 'absolute';
+			flashText.style.top = '1px';
+			flashText.style.left = '50%';
+			flashText.style.transform = 'translateX(-50%)';
+			flashText.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+			flashText.style.color = 'white';
+			flashText.style.padding = '5px 10px';
+			flashText.style.borderRadius = '5px';
+			flashText.style.fontSize = '54px';
+			flashText.style.zIndex = '9999';
+			
+			// Append the flash text to the clicked element
+			element.style.position = 'relative'; // Ensuring the flash text is relative to the element
+			element.appendChild(flashText);
+			
+			// Remove the "Copied" text after 3 seconds
+			setTimeout(function() {
+				flashText.style.transition = 'opacity 0.5s';
+				flashText.style.opacity = '0';
+				setTimeout(function() {
+					flashText.remove();
+				}, 500); // Delay to allow fade out
+			}, 800);
+		}).catch(function() {
+			console.error('Failed to copy text to clipboard');
+		});
+	});
+});
+
 	</script>
 </body>
 </html>
