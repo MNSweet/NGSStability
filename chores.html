@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Chore Viewer</title>
+	<style>
+		:root {
+			--bg: #fff;
+			--text: #000;
+			--card-bg: #f0f0f0;
+			--highlight: #2196f3;
+		}
+
+		@media (prefers-color-scheme: dark) {
+			:root {
+				--bg: #121212;
+				--text: #e0e0e0;
+				--card-bg: #1f1f1f;
+				--highlight: #64b5f6;
+			}
+		}
+
+		body {
+			margin: 0;
+			font-family: sans-serif;
+			background: var(--bg);
+			color: var(--text);
+			padding: 2rem;
+		}
+
+		section {
+			margin-bottom: 3rem;
+		}
+
+		.day-card {
+			background: var(--card-bg);
+			padding: 2rem;
+			border-radius: 1rem;
+			box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+			max-width: 250px;
+			margin: 0 auto 2rem auto;
+			text-align: center;
+		}
+
+		ul.checklist {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+			text-align: center;
+		}
+
+		ul.checklist li {
+			display: flex;
+			align-items: center;
+			padding: 0.75rem 0;
+			border-bottom: 1px solid #ccc2;
+			justify-content: center;
+		}
+
+		ul.checklist li:last-child {
+			border-bottom: none;
+		}
+
+		.chore-icon {
+			width: 32px;
+			height: 32px;
+			margin-right: 1rem;
+			border-radius: 0.5rem;
+			flex-shrink: 0;
+		}
+
+		.week-view {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(calc(20% - 1rem), 1fr));
+			gap: 1rem;
+			text-align: center;
+		}
+
+		.week-day {
+			padding: 1rem;
+			border-radius: 0.5rem;
+			background: var(--card-bg);
+		}
+
+		.week-day.today {
+			border: 2px solid var(--highlight);
+		}
+
+		.week-day h3 {
+			margin-top: 0;
+			font-size: 1.1rem;
+		}
+
+		.week-day ul {
+			padding-left: 1rem;
+			margin: 0;
+			font-size: 0.9rem;
+		}
+
+		.week-day li {
+			display: flex;
+			align-items: center;
+			margin: 0.25rem 0;
+		}
+
+		.week-day .chore-icon {
+			width: 20px;
+			height: 20px;
+			margin-right: 0.5rem;
+		}
+	</style>
+</head>
+<body>
+	<section class="day-card">
+		<h1>Today's Chores</h1>
+		<ul class="checklist" id="today-list"></ul>
+	</section>
+
+	<section>
+		<h2>This Week</h2>
+		<div class="week-view" id="week-view"></div>
+	</section>
+
+	<section>
+		<h2>Next Week</h2>
+		<div class="week-view" id="next-week-view"></div>
+	</section>
+
+	<script>
+		const chores = {
+			"Dusting": "images/dusting.png",
+			"Sweeping": "images/sweeping.png",
+			"Trash": "images/trash.png",
+			"Mopping": "images/mopping.png",
+			"Toilet": "images/toilet.png"
+		};
+
+		const week1 = {
+			Monday: [
+				["Dusting", "Alexa"],
+				["Sweeping", "Leeann"],
+				["Trash", "Max"]
+			],
+			Tuesday: [
+				["Dusting", "Max"],
+				["Sweeping", "Joel"],
+				["Mopping", "Alexa"],
+				["Toilet", "Leeann"],
+				["Trash", "Max"]
+			],
+			Wednesday: [
+				["Dusting", "Leeann"],
+				["Sweeping", "Max"],
+				["Trash", "Alexa"]
+			],
+			Thursday: [
+				["Dusting", "Leeann"],
+				["Sweeping", "Alexa"],
+				["Mopping", "Max"],
+				["Toilet", "Joel"],
+				["Trash", "Leeann"]
+			],
+			Friday: [
+				["Dusting", "Max"],
+				["Sweeping", "Leeann"],
+				["Trash", "Alexa"]
+			]
+		};
+
+		const week2 = {
+			Monday: [["Dusting", "Max"], ["Sweeping", "Alexa"], ["Trash", "Leeann"]],
+			Tuesday: [["Dusting", "Joel"], ["Sweeping", "Max"], ["Mopping", "Leeann"], ["Toilet", "Alexa"], ["Trash", "Joel"]],
+			Wednesday: [["Dusting", "Alexa"], ["Sweeping", "Leeann"], ["Trash", "Max"]],
+			Thursday: [["Dusting", "Leeann"], ["Sweeping", "Alexa"], ["Mopping", "Joel"], ["Toilet", "Max"], ["Trash", "Leeann"]],
+			Friday: [["Dusting", "Leeann"], ["Sweeping", "Max"], ["Trash", "Alexa"]]
+		};
+
+		const weekdayOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+		const today = new Date();
+		const weekNumber = 1 + Math.floor((today - new Date(today.getFullYear(), 0, 1)) / (7 * 24 * 60 * 60 * 1000));
+		const evenWeekIndex = (weekNumber % 2 === 0) ? 1 : 0;
+		const activeWeek = evenWeekIndex === 0 ? week1 : week2;
+		const nextWeek = evenWeekIndex === 0 ? week2 : week1;
+		const todayName = today.toLocaleDateString('en-US', { weekday: 'long' });
+
+		function renderChecklist(containerId, day, data) {
+			const list = document.getElementById(containerId);
+			list.innerHTML = "";
+			(data[day] || []).forEach(([task, person]) => {
+				const li = document.createElement("li");
+				li.innerHTML = `<div class="chore-icon" style="background-image: url('${chores[task] || ''}'); background-size: cover;"></div>
+				<strong>${task}</strong> &nbsp; – &nbsp;${person}`;
+				list.appendChild(li);
+			});
+		}
+
+		function renderWeek(containerId, weekData, activeWeek = false) {
+			const container = document.getElementById(containerId);
+			container.innerHTML = "";
+			weekdayOrder.forEach(day => {
+				const div = document.createElement("div");
+				div.className = "week-day" + (day === todayName && activeWeek ? " today" : "");
+				div.innerHTML = `<h3>${day}</h3>`;
+				const ul = document.createElement("ul");
+				(weekData[day] || []).forEach(([task, person]) => {
+					const li = document.createElement("li");
+					li.innerHTML = `<div class="chore-icon" style="background-image: url('${chores[task] || ''}'); background-size: cover;"></div>${person}`;
+					ul.appendChild(li);
+				});
+				div.appendChild(ul);
+				container.appendChild(div);
+			});
+		}
+
+		renderChecklist("today-list", todayName, activeWeek);
+		renderWeek("week-view", activeWeek, true);
+		renderWeek("next-week-view", nextWeek);
+	</script>
+</body>
+</html>
