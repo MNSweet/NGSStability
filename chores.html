@@ -179,7 +179,7 @@
 		const weekdayOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 		const today = new Date();
 		const weekNumber = 1 + Math.floor((today - new Date(today.getFullYear(), 0, 1)) / (7 * 24 * 60 * 60 * 1000));
-		const evenWeekIndex = (weekNumber % 2 === 0) ? 0 : 1;
+		const evenWeekIndex = (weekNumber % 2 === 0) ? 1 : 0;
 		const activeWeek = evenWeekIndex === 0 ? week1 : week2;
 		const nextWeek = evenWeekIndex === 0 ? week2 : week1;
 		const todayName = today.toLocaleDateString('en-US', { weekday: 'long' });
