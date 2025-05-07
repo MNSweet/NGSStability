@@ -189,7 +189,7 @@
 		const weekNumber = today.getWeekNumber();
 		const evenWeekIndex = (weekNumber % 2 === 0) ? 1 : 0;
 		const activeWeek = evenWeekIndex === 0 ? week2 : week1;
-		const nextWeek = evenWeekIndex === 0 ? week2 : week1;
+		const nextWeek = evenWeekIndex === 0 ? week1 : week2;
 		const todayName = today.toLocaleDateString('en-US', { weekday: 'long' });
 		console.log({
 			"weekNumber":weekNumber,
