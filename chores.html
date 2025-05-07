@@ -128,6 +128,14 @@
 	</section>
 
 	<script>
+		Date.prototype.getWeekNumber = function(){
+			var d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
+			var dayNum = d.getUTCDay() || 7;
+			d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+			var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+			return Math.ceil((((d - yearStart) / 86400000) + 1)/7)
+		};
+
 		const chores = {
 			"Dusting": "images/dusting.png",
 			"Sweeping": "images/sweeping.png",
@@ -178,11 +186,18 @@
 
 		const weekdayOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 		const today = new Date();
-		const weekNumber = 1 + Math.floor((today - new Date(today.getFullYear(), 0, 1)) / (7 * 24 * 60 * 60 * 1000));
+		const weekNumber = today.getWeekNumber();
 		const evenWeekIndex = (weekNumber % 2 === 0) ? 1 : 0;
-		const activeWeek = evenWeekIndex === 0 ? week1 : week2;
+		const activeWeek = evenWeekIndex === 0 ? week2 : week1;
 		const nextWeek = evenWeekIndex === 0 ? week2 : week1;
 		const todayName = today.toLocaleDateString('en-US', { weekday: 'long' });
+		console.log({
+			"weekNumber":weekNumber,
+			"evenWeekIndex":evenWeekIndex,
+			"activeWeek":activeWeek,
+			"nextWeek":nextWeek,
+			"todayName":todayName
+		})
 
 		function renderChecklist(containerId, day, data) {
 			const list = document.getElementById(containerId);
