@@ -71,12 +71,15 @@
 		}
 
 		.week-view {
-			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(calc(20% - 1rem), 1fr));
-			gap: 1rem;
 			text-align: center;
 		}
-
+		@media screen and (min-width: 800px) {
+			.week-view {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(calc(20% - 1rem), 1fr));
+				gap: 1rem;
+			}
+		}
 		.week-day {
 			padding: 1rem;
 			border-radius: 0.5rem;
@@ -90,6 +93,22 @@
 		.week-day h3 {
 			margin-top: 0;
 			font-size: 1.1rem;
+		}
+		@media screen and (max-width: 799px) {
+
+			section:not(.day-card) {
+				max-width: 250px;
+				margin: 0 auto;
+			}
+			.week-day {
+				display: flex;
+				max-width: 250px;
+			}
+			.week-day h3 {
+				writing-mode: vertical-rl;
+				text-orientation: sideways;
+				transform: rotate(180deg);
+			}
 		}
 
 		.week-day ul {

@@ -4,3 +4,6 @@ javascript:(function(){var e=document.getElementById('MainContent_ctl00_DateRang
 
 document.querySelector('[id^="popupModaliFrame"]').contentWindow.document.querySelector('#completeAction').click()
 setTimeout(()=>{document.querySelector('[aria-modal="true"] button.close').click();},500);
+
+
+for /r %F in (*Document Request*) do ren "%F" "%F:Document Request=DOCUMENT REQUEST%"
