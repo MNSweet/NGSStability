@@ -7,3 +7,18 @@ setTimeout(()=>{document.querySelector('[aria-modal="true"] button.close').click
 
 
 for /r %F in (*Document Request*) do ren "%F" "%F:Document Request=DOCUMENT REQUEST%"
+
+
+// Batch Numbering
+let ascList = [];
+document.querySelectorAll(`td.seq-num+td`).forEach((acs)=>{ascList.push(acs.innerText)});
+ascList.sort();
+
+document.querySelectorAll(`td.seq-num`).forEach((row)=>{
+	if(
+		(typeof row != "null" || typeof row != "undefined") 
+		&& [row.querySelector('input')].length > 0
+	) {
+		row.querySelector('input').value = ascList.indexOf(row.nextElementSibling.innerText) + 1;
+	}
+})
