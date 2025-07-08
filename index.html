@@ -215,42 +215,12 @@
 				</div>
 			</div>
 			<div class="date-row"></div>
-			<div id="rejectionPhrases">
+			<div id="stabilityChecker">
 				<div class="date-row" style="height:500px; overflow-y: scroll;">
-					<h1>Answers</h1>
+					<h1>Stability Checker</h1>
 					<div style="font-size: 50px !important; color:#fff">
-						<!--
-						<input type="text" name="dateChecker" id="dateChecker">
-						<span id="stabilityOutput"></span>-->
-<h3 style="font-size: 60px !important;">Biological agents can be used as weapons of mass destruction (WMD). Which of the following are characteristics of biological agents that would benefit a terrorist group or individual?</h3>
-<p>Correct answer: All of the above</p>
-
-<h3 style="font-size: 60px !important;">The federal government has categorized critical biological agents into three groups: A, B, and C. Those agents in category A are highest-priority because they:</h3>
-<p>Correct answer: Can be easily disseminated or transmitted person-to-person</p>
-
-<h3 style="font-size: 60px !important;">Members of the chemical component of the LRN define their network participation with a designation of level 1, 2, or 3. The level primarily responsible for working with hospitals and private laboratories is:</h3>
-<p>Correct answer: Level 3</p>
-
-<h3 style="font-size: 60px !important;">If a package or envelope appears suspicious, the most important thing you should do is:</h3>
-<p>Correct answer: Not open, and, if possible, not touch the package or envelope</p>
-
-<h3 style="font-size: 60px !important;">The general signs and symptoms of smallpox include:</h3>
-<p>Correct answer: A rash that starts as red bumps but quickly develops into small, itchy blisters</p>
-
-<h3 style="font-size: 60px !important;">One of the most important contributions those working in healthcare can make is to:</h3>
-<p>Correct answer: Help minimize hysteria</p>
-
-<h3 style="font-size: 60px !important;">Some agents can be food or waterborne, such as Salmonella or Shigella. These agents are considered what category?</h3>
-<p>Correct answer: Category B</p>
-
-<h3 style="font-size: 60px !important;">The Laboratory Response Network (LRN) is a multilevel system designed to link frontline clinical laboratories to advanced capacity testing laboratories. The frontline microbiology laboratories are classified by the LRN as:</h3>
-<p>Correct answer: Sentinel laboratories</p>
-
-<h3 style="font-size: 60px !important;">The early symptoms of anthrax include:</h3>
-<p>Correct answer: Flu-like—chills, fever, nausea, and swelling of lymph nodes</p>
-
-<h3 style="font-size: 60px !important;">Terrorism involves...</h3>
-<p>Correct answer: A and B</p>
+						<input type="text" name="dateChecker" id="dateChecker" placeholder="Enter date MM/DD/YYYY">
+						<span id="stabilityOutput"></span>
 					</div>
 				</div>
 			</div>
@@ -331,6 +301,39 @@
 			renderDateParts('sixty', formatDate(sixtyDaysAgo));
 			renderDateParts('ninety', formatDate(ninetyDaysAgo));
 		}, 1000 * 60 * 60 * 4);
+
+		// Parse MM/DD/YYYY into a Date, or return null if invalid
+		function parseUSDate(str) {
+			const [m, d, y] = str.split('/');
+			const mm = parseInt(m, 10) - 1;
+			const dd = parseInt(d, 10);
+			const yyyy = parseInt(y, 10);
+			const date = new Date(yyyy, mm, dd);
+			return isNaN(date) ? null : date;
+		}
+
+		// Given a base Date, compute offset days and format
+		function getOffsetDate(baseDate, daysOffset) {
+			const d = new Date(baseDate);
+			d.setDate(d.getDate() + daysOffset);
+			return formatDate(d);
+		}
+
+		document.getElementById('stabilityBTN').addEventListener('click', function () {
+			const inputStr = document.getElementById('stabilityChecker').value.trim();
+			const userDate = parseUSDate(inputStr);
+			if (!userDate) {
+				document.getElementById('stabilityOutput').textContent =
+					'Invalid date. Use MM/DD/YYYY.';
+				return;
+			}
+
+			const minus60 = getOffsetDate(userDate, -60);
+			const minus90 = getOffsetDate(userDate, -90);
+
+			document.getElementById('stabilityOutput').textContent =
+				`From ${formatDate(userDate)} → 60 days back: ${minus60}, 90 days back: ${minus90}`;
+		});
 
 		document.querySelector('#colorToggle').addEventListener("click", (e) => {
 			if (e.target.checked) {

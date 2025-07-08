@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Tube Rack Locator</title>
+	<style>
+		:root {
+			--dot-size: 50px;
+			--dot-radius: 20px;
+			--gap: 10px;
+			--extra-gap: 10px;
+			--color-gray: #a7a7a7;
+			--color-blue: #7577fb;
+			--color-located: #e9c947;
+			--container-min: 600px;
+			--container-max: 800px;
+		}
+		body {
+			margin: 20px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+		.container {
+			min-width: var(--container-min);
+			max-width: var(--container-max);
+			width: 100%;
+		}
+		.controls {
+			display: flex;
+			align-items: center;
+			margin-bottom: 10px;
+		}
+		.controls input[type="number"] {
+			flex: 1;
+			padding: 5px;
+			margin-right: 5px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+		}
+		.controls button {
+			padding: 5px 10px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			background: white;
+			cursor: pointer;
+		}
+		details {
+			margin-bottom: 10px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+		}
+		details summary {
+			padding: 8px;
+			cursor: pointer;
+			outline: none;
+		}
+		.accessions-inner {
+			display: flex;
+			gap: 10px;
+			padding: 8px;
+		}
+		.accessions-list-col {
+			flex: 1;
+		}
+		.accessions-list-col textarea {
+			width: 100%;
+			height: 100px;
+			padding: 5px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			resize: vertical;
+		}
+		.accessions-action-col {
+			display: flex;
+			flex-direction: column;
+			gap: 5px;
+		}
+		.accessions-action-col input,
+		.accessions-action-col button {
+			padding: 5px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+		}
+		.tags-container {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 5px;
+			margin-top: 5px;
+		}
+		.tag {
+			padding: 2px 6px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			background: #f0f0f0;
+			cursor: default;
+		}
+		.tag button {
+			background: transparent;
+			border: none;
+			cursor: pointer;
+			margin-right: 4px;
+		}
+		#grid {
+			display: grid;
+			grid-template-columns:
+				var(--dot-size) var(--dot-size) var(--dot-size) var(--dot-size) var(--extra-gap)
+				var(--dot-size) var(--dot-size) var(--dot-size) var(--dot-size) var(--extra-gap)
+				var(--dot-size) var(--dot-size) var(--dot-size) var(--dot-size);
+			grid-auto-rows: var(--dot-size);
+			gap: var(--gap);
+			justify-content: center;
+		}
+		.dot {
+			width: var(--dot-size);
+			height: var(--dot-size);
+			border-radius: var(--dot-radius);
+			background: var(--color-blue);
+			cursor: pointer;
+		}
+		.dot.gray,
+		.dot.empty {
+			background: var(--color-gray);
+		}
+		.dot.located {
+			background: var(--color-located);
+		}
+		.spacer {
+			width: 100%;
+			height: 100%;
+		}
+		/* Page background */
+		body {
+			background: #f2f4f6;
+			font-size: 20px;
+		}
+
+		/* Main wrapper */
+		.container {
+			background: #ffffff;
+			border: 1px solid #d0d2d6;
+			border-radius: 8px;
+			padding: 16px;
+		}
+
+		/* Tube Location + Search row */
+		.controls {
+			background: #f7f8fa;
+			border: 1px solid #d0d2d6;
+			border-radius: 4px;
+			padding: 8px;
+			margin-bottom: 12px;
+		}
+
+		/* Details summary header */
+		details summary {
+			background: #f7f8fa;
+			border-bottom: 1px solid #d0d2d6;
+			border-radius: 4px 4px 0 0;
+		}
+
+		/* Accessions pane */
+		.accessions-inner {
+			background: #ffffff;
+			border-top: none;
+			border: 1px solid #d0d2d6;
+			border-radius: 0 0 4px 4px;
+			padding: 12px;
+		}
+
+		/* Grid container */
+		#grid {
+			background: #ffffff;
+			border: 1px solid #d0d2d6;
+			border-radius: 8px;
+			padding: 12px;
+			margin-top: 12px;
+		}
+		[for="tube-location"] {
+			font-weight: bold;
+		}
+
+		#tube-location {
+			margin-left: 10px;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="controls">
+			<label for="tube-location">Tube Location</label>
+			<input id="tube-location" type="number" min="1" max="94">
+			<button id="search-btn">Search</button>
+		</div>
+		<details>
+			<summary>Load and Search by Accessions</summary>
+			<div class="accessions-inner">
+				<div class="accessions-list-col">
+					<label>Accessions</label><br>
+					<small>one per line, numbers only</small><br>
+					<textarea id="accession-textarea"></textarea>
+				</div>
+				<div class="accessions-action-col">
+					<input id="accession-search" type="number" placeholder="Accession Search" disabled>
+					<button id="add-accession" disabled>Add</button>
+					<button id="clear-accessions" disabled>clear</button>
+					<div class="tags-container" id="tags"></div>
+				</div>
+			</div>
+		</details>
+		<div id="grid"></div>
+	</div>
+	<script>
+		const grid = document.getElementById("grid");
+		const textarea = document.getElementById("accession-textarea");
+		const searchInput = document.getElementById("accession-search");
+		const addBtn = document.getElementById("add-accession");
+		const clearBtn = document.getElementById("clear-accessions");
+		const tagsContainer = document.getElementById("tags");
+		const tubeInput = document.getElementById("tube-location");
+		const searchBtn = document.getElementById("search-btn");
+		let accessions = [];
+
+		buildGrid();
+
+		/**
+		 * Build 12×10 rack grid and assign data-index in column-major order
+		 */
+		function buildGrid() {
+			// collect active wells
+			const wells = [];
+
+			for (let row = 1; row <= 10; row++) {
+				for (let col = 1; col <= 12; col++) {
+					// Inject a spacer *before* column 5 (i.e., after column 4)
+					if (col === 5 || col === 9) {
+						const spacer = document.createElement("div");
+						spacer.classList.add("spacer");
+						grid.appendChild(spacer);
+					}
+
+					const dot = document.createElement("div");
+					dot.classList.add("dot");
+
+					if (row <= 2 || (col === 12 && row >= 9)) {
+						dot.classList.add("gray");
+					} else {
+						wells.push({ col, row, el: dot });
+					}
+
+					dot.addEventListener("click", toggleDot);
+					grid.appendChild(dot);
+				}
+			}
+
+			// sort by column then row, then assign indices 1…94
+			wells
+				.sort((a, b) => (a.col - b.col) || (a.row - b.row))
+				.forEach((w, i) => {
+					w.el.dataset.index = i + 1;
+				});
+		}
+
+		/**
+		 * Parse textarea on blur into accession list
+		 */
+		textarea.addEventListener("blur", parseAccessions);
+
+		/**
+		 * Add single accession on click
+		 */
+		addBtn.addEventListener("click", () => {
+			const num = searchInput.value.trim();
+			if (num && !accessions.includes(num)) {
+				accessions.push(num);
+				tagsContainer.append(createTag(num));
+				toggleDotByAccession(num);
+				searchInput.value = "";
+			}
+		});
+
+		/**
+		 * Clear all accessions and highlights
+		 */
+		clearBtn.addEventListener("click", () => {
+			accessions = [];
+			tagsContainer.innerHTML = "";
+			[...document.querySelectorAll(".dot")].forEach(dot => {
+				dot.classList.remove("located", "empty");
+				if (dot.dataset.index) {
+					dot.dataset.accession = "";
+				}
+			});
+			searchInput.disabled = true;
+			addBtn.disabled = true;
+			clearBtn.disabled = true;
+		});
+
+		/**
+		 * Search tube by index
+		 */
+		searchBtn.addEventListener("click", () => {
+			const idx = parseInt(tubeInput.value);
+			if (idx >= 1 && idx <= 94) {
+				const dots = [...document.querySelectorAll(".dot.located")];
+				if (!document.querySelector("details").open && dots.length <= 1) {
+					dots.forEach(d => d.classList.remove("located"));
+				}
+				const target = document.querySelector(`.dot[data-index='${idx}']`);
+				target.classList.add("located");
+			}
+		});
+
+		/**
+		 * Toggle dot located state and tag
+		 */
+		function toggleDot(e) {
+			const dot = e.currentTarget;
+			dot.classList.toggle("located");
+			if (accessions.includes(dot.dataset.accession)) {
+				removeTag(dot.dataset.accession);
+			} else if (dot.dataset.accession) {
+				accessions.push(dot.dataset.accession);
+				tagsContainer.append(createTag(dot.dataset.accession));
+			}
+		}
+
+		/**
+		 * Remove tag and clear dot located
+		 */
+		function removeTag(num) {
+			accessions = accessions.filter(a => a !== num);
+			const tag = tagsContainer.querySelector(`[data-accession='${num}']`);
+			tag.remove();
+			const dot = document.querySelector(`.dot[data-accession='${num}']`);
+			dot.classList.remove("located");
+		}
+
+		/**
+		 * Create a tag element
+		 */
+		function createTag(num) {
+			const span = document.createElement("span");
+			span.classList.add("tag");
+			span.dataset.accession = num;
+			const btn = document.createElement("button");
+			btn.textContent = "X";
+			btn.addEventListener("click", () => removeTag(num));
+			span.append(btn, document.createTextNode(` ${num}`));
+			clearBtn.disabled = false;
+			return span;
+		}
+
+		/**
+		 * Toggle dot by accession number
+		 */
+		function toggleDotByAccession(num) {
+			const dot = document.querySelector(`.dot[data-index][data-accession='']`);
+			const target = [...document.querySelectorAll(`.dot[data-index]`)].find(d => d.dataset.index && !d.dataset.accession && accessions.indexOf(num) === accessions.indexOf(num));
+			const dotByAcc = document.querySelector(`.dot[data-index='${accessions.indexOf(num)+1}']`);
+			if (dotByAcc) {
+				dotByAcc.dataset.accession = num;
+				dotByAcc.classList.add("located");
+			}
+		}
+
+		/**
+		 * Parse textarea into full list
+		 */
+		function parseAccessions() {
+			const lines = textarea.value.split(/\r?\n/).map(l => l.trim()).filter(l => /^\d+$/.test(l));
+			if (lines.length > 0) {
+				accessions = [];
+				tagsContainer.innerHTML = "";
+				lines.forEach((num, i) => {
+					accessions.push(num);
+					tagsContainer.append(createTag(num));
+					const dot = document.querySelector(`.dot[data-index='${i+1}']`);
+					dot.dataset.accession = num;
+					dot.classList.add("located");
+				});
+				[...document.querySelectorAll(`.dot[data-index]`)].forEach(d => {
+					if (i+1 > lines.length) {
+						d.classList.add("empty");
+					}
+				});
+				searchInput.disabled = false;
+				addBtn.disabled = false;
+			}
+		}
+	</script>
+</body>
+</html>
